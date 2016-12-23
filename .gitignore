@@ -38,3 +38,15 @@ captures/
 
 # Keystore files
 *.jks
+
+# Android Studio
+.idea/
+/*/local.properties
+/*/out
+/*/*/build
+/*/*/production
+*.iml
+*.iws
+*.ipr
+*~
+*.swp
