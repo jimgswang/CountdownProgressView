@@ -4,10 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
@@ -17,40 +18,63 @@ import android.widget.ProgressBar;
 
 public class CountdownProgressView extends FrameLayout {
 
+    public interface OnCompleteListener {
+        void onComplete();
+    }
+
+    // The underlying progressbar widget
     private ProgressBar progressBar;
-    private Context context;
+
+    // The animator used to update the progressbar widget
     private ObjectAnimator progressAnimator;
-    private long currentPlayTime;
+
+    // The listener to trigger after countdown is finished
     private OnCompleteListener onCompleteListener;
+
+    // Saves the currently paused time for the animation. Used to resume pre-19
+    private long currentPlayTime;
+
+    // Linear interpolator for consistent animation speed
+    private LinearInterpolator interpolator = new LinearInterpolator();
+
+    // The max value for the progress bar widget. Set to max so animation is smooth
+    // for long durations
+    private int progressbarMax = Integer.MAX_VALUE;
+
+    // The total duration of the countdown animation
+    private int duration = 4000;
 
 
     public CountdownProgressView(Context context) {
         super(context);
-        this.context = context;
-
-        init();
+        init(context, null, 0);
     }
 
     public CountdownProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
-
-        init();
+        init(context, attrs, 0);
     }
 
     public CountdownProgressView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        this.context = context;
-
-        init();
+        init(context, attrs, defStyle);
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs, int defStyle) {
+        TypedArray array = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CountdownProgressView, 0, 0);
+
+        try {
+            duration = array.getInteger(R.styleable.CountdownProgressView_cpv_duration, 0);
+        } finally {
+            array.recycle();
+        }
+
         LayoutInflater.from(context).inflate(R.layout.view_countdown_progress, this, true);
 
         progressBar = (ProgressBar) findViewById(R.id.cpv_progress);
-        progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0, 100);
-        progressAnimator.setDuration(4000);
+        progressBar.setMax(progressbarMax);
+        progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0, progressbarMax);
+        progressAnimator.setInterpolator(interpolator);
         progressAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -60,6 +84,8 @@ public class CountdownProgressView extends FrameLayout {
                 }
             }
         });
+
+        setDuration(duration);
     }
 
     public void setOnCompleteListener(OnCompleteListener listener) {
@@ -95,7 +121,7 @@ public class CountdownProgressView extends FrameLayout {
         progressAnimator.cancel();
     }
 
-    public interface OnCompleteListener {
-        void onComplete();
+    public void setDuration(int duration) {
+        progressAnimator.setDuration(duration);
     }
 }
