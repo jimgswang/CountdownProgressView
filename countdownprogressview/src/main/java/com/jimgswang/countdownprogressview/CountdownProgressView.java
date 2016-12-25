@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -100,8 +101,8 @@ public class CountdownProgressView extends FrameLayout {
                 progressAnimator.start();
             }
         } else {
-            progressAnimator.setCurrentPlayTime(currentPlayTime);
             progressAnimator.start();
+            progressAnimator.setCurrentPlayTime(currentPlayTime);
             currentPlayTime = 0;
         }
     }
