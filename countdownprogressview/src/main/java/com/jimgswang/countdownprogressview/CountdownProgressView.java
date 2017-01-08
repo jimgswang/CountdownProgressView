@@ -44,6 +44,9 @@ public class CountdownProgressView extends FrameLayout {
     // The total duration of the countdown animation
     private int duration = 4000;
 
+    // If the animation was canceled.
+    private boolean wasCanceled = false;
+
 
     public CountdownProgressView(Context context) {
         super(context);
@@ -75,11 +78,17 @@ public class CountdownProgressView extends FrameLayout {
         progressBar.setMax(progressbarMax);
         progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0, progressbarMax);
         progressAnimator.setInterpolator(interpolator);
+
         progressAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                wasCanceled = true;
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                if (onCompleteListener != null) {
+                if (onCompleteListener != null && !wasCanceled) {
                     onCompleteListener.onComplete();
                 }
             }
@@ -88,11 +97,20 @@ public class CountdownProgressView extends FrameLayout {
         setDuration(duration);
     }
 
+    /**
+     * Set the OnCompleteListener to be called when the ProgressBar is filled
+     * @param listener
+     */
     public void setOnCompleteListener(OnCompleteListener listener) {
         onCompleteListener = listener;
     }
 
+    /**
+     * Resume the progressbar animation
+     */
     public void play() {
+        wasCanceled = false;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (progressAnimator.isPaused()) {
                 progressAnimator.resume();
@@ -106,6 +124,9 @@ public class CountdownProgressView extends FrameLayout {
         }
     }
 
+    /**
+     * Pause the progressbar animation
+     */
     public void pause() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             progressAnimator.pause();
@@ -115,16 +136,27 @@ public class CountdownProgressView extends FrameLayout {
         }
     }
 
+    /**
+     * Reset the progressbar to initial state
+     */
     public void reset() {
         currentPlayTime = 0;
         progressAnimator.setCurrentPlayTime(currentPlayTime);
         progressAnimator.cancel();
     }
 
+    /**
+     * Set the duration of the progress animation
+     * @param duration The duration in ms
+     */
     public void setDuration(int duration) {
         progressAnimator.setDuration(duration);
     }
 
+    /**
+     * Get the underlying progressbar widget
+     * @return ProgressBar the ProgressBar widget
+     */
     public ProgressBar getProgressBar() {
         return progressBar;
     }
