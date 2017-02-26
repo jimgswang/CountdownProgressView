@@ -6,6 +6,8 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.animation.LinearInterpolator;
@@ -21,6 +23,12 @@ public class CountdownProgressView extends FrameLayout {
     public interface OnCompleteListener {
         void onComplete();
     }
+
+    private static final String KEY_SUPERSTATE = "cpv_superstate";
+
+    private static final String KEY_CURRENT_TIME = "cpv_currenttime";
+
+    private static final int DEFAULT_DURATION = 30000;
 
     // The underlying progressbar widget
     private ProgressBar progressBar;
@@ -42,7 +50,7 @@ public class CountdownProgressView extends FrameLayout {
     private int progressbarMax = Integer.MAX_VALUE;
 
     // The total duration of the countdown animation
-    private int duration = 4000;
+    private int duration;
 
     // If the animation was canceled.
     private boolean wasCanceled = false;
@@ -67,7 +75,7 @@ public class CountdownProgressView extends FrameLayout {
         TypedArray array = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CountdownProgressView, 0, 0);
 
         try {
-            duration = array.getInteger(R.styleable.CountdownProgressView_cpv_duration, 0);
+            duration = array.getInteger(R.styleable.CountdownProgressView_cpv_duration, DEFAULT_DURATION);
         } finally {
             array.recycle();
         }
@@ -128,10 +136,12 @@ public class CountdownProgressView extends FrameLayout {
      * Pause the progressbar animation
      */
     public void pause() {
+        if (progressAnimator.isRunning()) {
+            currentPlayTime = progressAnimator.getCurrentPlayTime();
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             progressAnimator.pause();
         } else {
-            currentPlayTime = progressAnimator.getCurrentPlayTime();
             progressAnimator.cancel();
         }
     }
@@ -159,5 +169,27 @@ public class CountdownProgressView extends FrameLayout {
      */
     public ProgressBar getProgressBar() {
         return progressBar;
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_SUPERSTATE, super.onSaveInstanceState());
+        bundle.putLong(KEY_CURRENT_TIME, currentPlayTime);
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state)
+    {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            currentPlayTime = bundle.getLong(KEY_CURRENT_TIME, 0);
+            progressAnimator.setCurrentPlayTime(currentPlayTime);
+            state = bundle.getParcelable(KEY_SUPERSTATE);
+        }
+        super.onRestoreInstanceState(state);
+
     }
 }
