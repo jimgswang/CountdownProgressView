@@ -125,7 +125,7 @@ public class CountdownProgressView extends FrameLayout {
             } else if (!progressAnimator.isRunning()){
                 progressAnimator.start();
             }
-        } else {
+        } else if (!progressAnimator.isRunning()) {
             progressAnimator.start();
             progressAnimator.setCurrentPlayTime(currentPlayTime);
             currentPlayTime = 0;
@@ -134,14 +134,19 @@ public class CountdownProgressView extends FrameLayout {
 
     /**
      * Pause the progressbar animation
+     * Call this method when the parent activity or fragment is paused
      */
     public void pause() {
-        if (progressAnimator.isRunning()) {
-            currentPlayTime = progressAnimator.getCurrentPlayTime();
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if(!progressAnimator.isPaused() && progressAnimator.isRunning()) {
+                // Paused animators still count as running
+                currentPlayTime = progressAnimator.getCurrentPlayTime();
+            }
             progressAnimator.pause();
         } else {
+            if (progressAnimator.isRunning()) {
+                currentPlayTime = progressAnimator.getCurrentPlayTime();
+            }
             progressAnimator.cancel();
         }
     }
@@ -190,6 +195,5 @@ public class CountdownProgressView extends FrameLayout {
             state = bundle.getParcelable(KEY_SUPERSTATE);
         }
         super.onRestoreInstanceState(state);
-
     }
 }
