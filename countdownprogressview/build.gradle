@@ -35,7 +35,7 @@ ext {
     gitUrl = 'https://github.com/jimgswang/CountdownProgressView.git'
     githubRepository= 'jimgswang/CountdownProgressView'
 
-    libraryVersion = '0.1.1'
+    libraryVersion = '0.2.0'
 
     developerId = 'jimgswang'
     developerName = 'Jim Wang'
