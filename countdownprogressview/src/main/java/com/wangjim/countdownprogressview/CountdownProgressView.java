@@ -1,4 +1,4 @@
-package com.jimgswang.countdownprogressview;
+package com.wangjim.countdownprogressview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

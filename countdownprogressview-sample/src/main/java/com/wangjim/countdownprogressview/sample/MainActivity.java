@@ -1,4 +1,4 @@
-package com.jimgswang.countdownprogressview.sample;
+package com.wangjim.countdownprogressview.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,10 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.jimgswang.countdownprogressview.CountdownProgressView;
+import com.wangjim.countdownprogressview.CountdownProgressView;
 
 import me.zhanghai.android.materialprogressbar.HorizontalProgressDrawable;
-import me.zhanghai.android.materialprogressbar.IndeterminateHorizontalProgressDrawable;
 
 public class MainActivity extends AppCompatActivity {
 

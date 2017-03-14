@@ -1,4 +1,4 @@
-package com.jimgswang.countdownprogressview.sample;
+package com.wangjim.countdownprogressview.sample;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.jimgswang.countdownprogressview.sample;
+package com.wangjim.countdownprogressview;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.jimgswang.countdownprogressview.sample", appContext.getPackageName());
+        assertEquals("com.jimgswang.countdownprogressview.test", appContext.getPackageName());
     }
 }
