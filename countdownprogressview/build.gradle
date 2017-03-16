@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'countdownprogressview'
+
+    publishedGroupId = 'com.wangjim'
+    libraryName = 'CountdownProgressView'
+    artifact = 'countdownprogressview'
+
+    libraryDescription = 'A progress view controlled by a countdown'
+
+    siteUrl = 'https://github.com/jimgswang/CountdownProgressView'
+    gitUrl = 'https://github.com/jimgswang/CountdownProgressView.git'
+    githubRepository= 'jimgswang/CountdownProgressView'
+
+    libraryVersion = '0.2.0'
+
+    developerId = 'jimgswang'
+    developerName = 'Jim Wang'
+    developerEmail = 'jim.gs.wang@gmail.com'
+
+    licenseName = 'MIT'
+    licenseUrl = 'https://mit-license.org/'
+    allLicenses = ["MIT"]
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    testCompile 'junit:junit:4.12'
+}
+
+apply from: 'https://raw.githubusercontent.com/jimgswang/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/jimgswang/JCenter/master/bintrayv1.gradle'
